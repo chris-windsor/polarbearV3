@@ -1,0 +1,14 @@
+{
+  "files": [
+    "src/Polarbear.ts"
+  ],
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "es2017.object",
+      "esnext"
+    ],
+    "noImplicitAny": true,
+    "target": "es5"
+  }
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Polarbear</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.css">
+</head>
+<body>
+<div id="app">
+  <div class="container">
+    <h1 class="title is-3" showif="name === 'Chris'">hello {{name}}</h1>
+    <h3 class="title is-5" showelse>welcome back</h3>
+    <hr>
+    <button @click="console.log(this.name)">test</button>
+  </div>
+</div>
+<script src="bundle.js"></script>
+<script>
+  const vm = new Polarbear({
+    el: "#app",
+    data: {
+      name: "Chris",
+      favNum: 7,
+      groceryList: ["Apple", "Mango", "Peach"]
+    },
+    filters: {
+      reverse(s) {
+        return s.split("")
+                .reverse()
+                .join("");
+      },
+      toUpper(s) {
+        return s.toUpperCase();
+      }
+    },
+    methods: {
+      getYear() {
+        return new Date().getFullYear();
+      }
+    },
+    watch: {
+      name(o, n) {
+        console.log(`name changed from ${o} to ${n}`);
+      }
+    },
+    created() {
+      console.log("Polarbear instance created");
+    },
+    mounted() {
+      console.log("Polarbear instance mounted");
+    }
+  });
+</script>
+</body>
+</html>
