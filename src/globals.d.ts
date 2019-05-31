@@ -6,7 +6,8 @@ type strObj = { [key: string]: string }
 type vNodeOpts = {
   attrs: strObj
   events: strObj
-  conditionalCase: string,
+  conditionalCase: string
+  loopCase: string | number
   boundData: { [key: string]: any }
   children: (vNode | string)[]
 }

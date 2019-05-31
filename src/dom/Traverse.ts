@@ -6,6 +6,7 @@ export const traverse = (node: HTMLElement) => {
   let attrs: strObj = {};
   let events: strObj = {};
   let conditionalCase: string = "";
+  let loopCase: string = "";
   let boundData: { [key: string]: any } = {};
   let children: vNode[] = [];
 
@@ -34,10 +35,10 @@ export const traverse = (node: HTMLElement) => {
       };
     } else if (name === "loopfor") {
       // Process loop attribute
-
+      loopCase = String(value);
     } else if (name === "ref") {
       // Process reference attribute
-
+      // TODO
     } else if (name === "showif") {
       // Process conditional if attribute
       const computedCondition: string = value.replace(Regexes.interpolationContent, (s: string) => {
@@ -63,6 +64,7 @@ export const traverse = (node: HTMLElement) => {
     attrs,
     events,
     conditionalCase,
+    loopCase,
     boundData,
     children
   });
