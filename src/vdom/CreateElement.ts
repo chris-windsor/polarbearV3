@@ -1,6 +1,6 @@
 import { vNodeOpts } from "../globals";
 
-export const createEl = (tagName: string, {attrs = {}, events = {}, conditionalCase = "", loopCase = "", boundData = {}, children = []}: vNodeOpts) => {
+export const createEl = (tagName: string, {attrs = {}, events = {}, conditionalCase = "", loopCase = "", boundData = {}, refName = "", children = []}: vNodeOpts) => {
   return {
     tagName,
     attrs,
@@ -8,6 +8,7 @@ export const createEl = (tagName: string, {attrs = {}, events = {}, conditionalC
     conditionalCase,
     loopCase,
     boundData,
+    refName,
     children
   };
 };

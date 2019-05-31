@@ -8,6 +8,7 @@ export const traverse = (node: HTMLElement) => {
   let conditionalCase: string = "";
   let loopCase: string = "";
   let boundData: { [key: string]: any } = {};
+  let refName: string = "";
   let children: vNode[] = [];
 
   Array.from(node.childNodes)
@@ -38,7 +39,7 @@ export const traverse = (node: HTMLElement) => {
       loopCase = String(value);
     } else if (name === "ref") {
       // Process reference attribute
-      // TODO
+      refName = String(value);
     } else if (name === "showif") {
       // Process conditional if attribute
       const computedCondition: string = value.replace(Regexes.interpolationContent, (s: string) => {
@@ -66,6 +67,7 @@ export const traverse = (node: HTMLElement) => {
     conditionalCase,
     loopCase,
     boundData,
+    refName,
     children
   });
 };

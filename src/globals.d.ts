@@ -9,6 +9,7 @@ type vNodeOpts = {
   conditionalCase: string
   loopCase: string | number
   boundData: { [key: string]: any }
+  refName: string
   children: (vNode | string)[]
 }
 

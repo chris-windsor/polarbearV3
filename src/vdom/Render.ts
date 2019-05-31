@@ -5,7 +5,7 @@ import { getProp } from "../data/DataFns";
 import computeBinding from "../attributes/Bindval";
 import { createEl } from "./CreateElement";
 
-export const renderElem = (instance: Polarbear, {tagName, attrs = {}, events = {}, conditionalCase, loopCase, boundData, children = []}: vNode) => {
+export const renderElem = (instance: Polarbear, {tagName, attrs = {}, events = {}, conditionalCase, loopCase, boundData, refName, children = []}: vNode) => {
   // Evaluate conditional statement for the element
   const conditionalEval: boolean = Boolean(Function(`"use strict";return ${conditionalCase};`)
     .call(instance));
@@ -54,10 +54,11 @@ export const renderElem = (instance: Polarbear, {tagName, attrs = {}, events = {
     return Array.from(new Array(loopCase), (v, i) => {
       return createEl(tagName, {
         attrs,
-        boundData,
         events,
         conditionalCase,
         loopCase: null,
+        boundData,
+        refName: null,
         children: [
           "hello" + i,
           ...loopCaseRenderedChildren
@@ -73,6 +74,10 @@ export const renderElem = (instance: Polarbear, {tagName, attrs = {}, events = {
 
     const {eventName, fn} = computeBinding(instance, prop, opts);
     $el.addEventListener(eventName, fn);
+  }
+
+  if (refName) {
+    instance.$refs[refName] = $el;
   }
 
   // Return the created element
