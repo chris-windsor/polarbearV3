@@ -1,16 +1,18 @@
 import { Regexes } from "../etc/Regexes";
 import { createEl } from "../vdom/CreateElement";
+import { strObj, vNode } from "../globals";
 
 export const traverse = (node: HTMLElement) => {
-  let children: {}[] = [];
-  let attrs: { [key: string]: string } = {};
-  let events: { [key: string]: string } = {};
+  let attrs: strObj = {};
+  let events: strObj = {};
   let conditionalCase: string = "";
+  let boundData: { [key: string]: any } = {};
+  let children: vNode[] = [];
 
   Array.from(node.childNodes)
        .forEach((e: HTMLElement) => {
          if (e.nodeType === 1) {
-           children.push(traverse(e));
+           children.push((traverse(e) as vNode));
          } else {
            children.push((e as any).data);
          }
@@ -22,10 +24,14 @@ export const traverse = (node: HTMLElement) => {
     if (name.startsWith("@")) {
       // Process event attributes
       const ev = name.slice(1);
-      events[ev] = value
+      events[ev] = value;
     } else if (name.startsWith("bindval")) {
       // Process value binding attribute
-
+      const specs = name.split(".");
+      boundData = {
+        prop: value,
+        opts: specs.slice(1)
+      };
     } else if (name === "loopfor") {
       // Process loop attribute
 
@@ -57,6 +63,7 @@ export const traverse = (node: HTMLElement) => {
     attrs,
     events,
     conditionalCase,
+    boundData,
     children
   });
 };

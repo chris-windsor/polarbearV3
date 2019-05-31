@@ -1,10 +1,10 @@
 import Polarbear from "../Polarbear";
 import { vNode } from "../globals";
 import computeEvent from "../attributes/Events";
-import { Regexes } from "../etc/Regexes";
-import innerInterpolation = Regexes.innerInterpolation;
+import { getProp } from "../data/DataFns";
+import computeBinding from "../attributes/Bindval";
 
-export const renderElem = (instance: Polarbear, {tagName, attrs, events, conditionalCase, children}: vNode) => {
+export const renderElem = (instance: Polarbear, {tagName, attrs, events, conditionalCase, boundData, children}: vNode) => {
   // Evaluate conditional statement for the element
   const conditionalEval: boolean = Boolean(Function(`"use strict";return ${conditionalCase};`)
     .call(instance));
@@ -24,8 +24,7 @@ export const renderElem = (instance: Polarbear, {tagName, attrs, events, conditi
 
   // Add element events
   for (const [k, v] of Object.entries(events)) {
-    // $el.addEventListener(k, (v as any));
-    const { eventName, fn, otherEventModifiers } = computeEvent(instance, k, v);
+    const {eventName, fn, otherEventModifiers} = computeEvent(instance, k, v);
     $el.addEventListener(eventName, fn, otherEventModifiers);
   }
 
@@ -33,6 +32,15 @@ export const renderElem = (instance: Polarbear, {tagName, attrs, events, conditi
   for (const child of children) {
     const $child = render(instance, child);
     $el.appendChild($child);
+  }
+
+  if (boundData && $el instanceof HTMLInputElement) {
+    const {prop, opts} = boundData;
+
+    $el.value = getProp(instance, prop);
+
+    const {eventName, fn} = computeBinding(instance, prop, opts);
+    $el.addEventListener(eventName, fn);
   }
 
   // Return the created element

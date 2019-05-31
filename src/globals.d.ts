@@ -1,10 +1,16 @@
 // Type definitions for Polarbear
 // Definitions by: Chris Windsor
 
-export interface vNode {
+type strObj = { [key: string]: string }
+
+type vNodeOpts = {
+  attrs: strObj
+  events: strObj
+  conditionalCase: string,
+  boundData: { [key: string]: any }
+  children: (vNode | string)[]
+}
+
+export interface vNode extends vNodeOpts {
   tagName: string
-  attrs: { [key: string]: string }
-  events: { [key: string]: string }
-  conditionalCase: string
-  children: vNode[]
 }

@@ -108,9 +108,12 @@ export default class Polarbear {
   }
 
   render() {
+    const r1 = performance.now();
     // Replace old DOM with newly rendered DOM
     document.querySelector(this.$appContainerSel)
             .replaceWith(renderElem(this, this.$vdom));
+    const r2 = performance.now();
+    console.log(`Render took ${(r2-r1).toFixed(1)}ms`)
   }
 }
 
