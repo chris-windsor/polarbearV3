@@ -128,6 +128,8 @@ export default class Polarbear {
     } else {
       const temp = hydrate(this, this.$masterVDom);
 
+      console.log(temp);
+
       const patch = diff(this, this.$currentVDom, temp);
 
       this.$appEl = patch(this.$appEl);

@@ -4,7 +4,8 @@
 
 import Polarbear from "../Polarbear";
 import { vNode } from "../globals";
-import { render } from "./Render";
+import { render, renderElem } from "./Render";
+import createEl from "./CreateElement";
 
 const zip = (xs: (vNode | string)[], ys: ((vNode | string)[] | NodeListOf<ChildNode>)) => {
   const zipped = [];
@@ -104,6 +105,21 @@ export default function diff(instance: Polarbear, vOldNode: (vNode | string), vN
     // TODO: compare to previous evaluation
     return ($node: HTMLElement) => {
       const $newNode = render(instance, vNewNode);
+      $node.replaceWith($newNode);
+      return $newNode;
+    };
+  }
+
+  if (vNewNode.loopCase !== vOldNode.loopCase) {
+    // TODO: this should probably be cleaned up
+    const $newNode = renderElem(instance, createEl(vNewNode.tagName, {
+      attrs: undefined, boundData: {}, conditionalCase: "", events: undefined, loopCase: undefined, refName: "",
+      children: render(instance, vNewNode)
+    }));
+    return ($node: HTMLElement) => {
+      for (let i = $node.parentNode.childNodes.length - 1; i > 1; i--) {
+        $node.parentNode.childNodes[i].remove();
+      }
       $node.replaceWith($newNode);
       return $newNode;
     };

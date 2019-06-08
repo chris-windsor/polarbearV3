@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Polarbear</title>
+</head>
+<body>
+<div id="app">
+  <ul class="mylist">
+    <li loopfor="4">
+      ...
+    </li>
+  </ul>
+</div>
+<script src="bundle.js"></script>
+<script>
+  const vm = new Polarbear({
+    el: "#app",
+    data: {
+      groceryList: ["Apple", "Mango", "Peach"]
+    }
+  });
+</script>
+</body>
+</html>
