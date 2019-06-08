@@ -2,6 +2,8 @@ import { traverse } from "./dom/Traverse";
 import { observe } from "./data/Observe";
 import { possibleEventList } from "./etc/ElementEvents";
 import { renderElem } from "./vdom/Render";
+import diff from "./vdom/Patch";
+import hydrate from "./vdom/Hydrate";
 
 type funcProp = { [key: string]: Function };
 
@@ -24,7 +26,8 @@ export default class Polarbear {
   $appContainerEl: HTMLElement;
 
   // Virtual dom
-  $vdom: any;
+  $masterVDom: any;
+  $currentVDom: any;
 
   // References to document elements that are used for edge cases
   $refs: { [key: string]: Element } = {};
@@ -41,6 +44,11 @@ export default class Polarbear {
   // Allows for other instance properties to be created
   [key: string]: any;
 
+  // TODO: remove
+  $initial: boolean = true;
+
+  $appEl: HTMLElement;
+
   constructor(params: PolarbearParams) {
     // Call created method if it exists
     // Instance has just been created. Nothing else has happened yet
@@ -53,7 +61,8 @@ export default class Polarbear {
     this.$appContainerEl = document.querySelector(this.$appContainerSel);
 
     // Traverse app DOM and copy into VDOM
-    this.$vdom = traverse(this.$appContainerEl);
+    this.$masterVDom = traverse(this.$appContainerEl);
+    this.$currentVDom = {};
 
     // Create observables for all of the data attributes
     observe(this, params.data);
@@ -89,6 +98,7 @@ export default class Polarbear {
       }
     }
 
+
     // Perform initial render
     this.render();
 
@@ -109,12 +119,31 @@ export default class Polarbear {
 
   render() {
     const r1 = performance.now();
-    // Replace old DOM with newly rendered DOM
-    document.querySelector(this.$appContainerSel)
-            .replaceWith(renderElem(this, this.$vdom));
+    if (this.$initial) {
+      this.$currentVDom = hydrate(this, this.$masterVDom);
+
+      this.$appEl = mount(renderElem(this, this.$currentVDom), this.$appContainerEl);
+
+      this.$initial = false;
+    } else {
+      const temp = hydrate(this, this.$masterVDom);
+
+      const patch = diff(this, this.$currentVDom, temp);
+
+      this.$appEl = patch(this.$appEl);
+
+      this.$currentVDom = temp;
+    }
+
     const r2 = performance.now();
-    console.log(`Render took ${(r2-r1).toFixed(1)}ms`)
+    console.log(`Render took ${(r2 - r1).toFixed(1)}ms`);
   }
 }
+
+function mount($node: HTMLElement, $target: HTMLElement) {
+  $target.replaceWith($node);
+  return $node;
+}
+
 
 (window as any).Polarbear = Polarbear;

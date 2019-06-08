@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Polarbear</title>
+</head>
+<body>
+<div id="app">
+  <h3>{{name}}</h3>
+  <h3>{{favNum}}</h3>
+</div>
+<script src="bundle.js"></script>
+<script>
+  const vm = new Polarbear({
+    el: "#app",
+    data: {
+      name: "Chris",
+      favNum: 7,
+    }
+  });
+</script>
+</body>
+</html>
