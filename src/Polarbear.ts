@@ -2,7 +2,7 @@ import traverse from "./dom/Traverse";
 import observe from "./data/Observe";
 import { possibleEventList } from "./etc/ElementEvents";
 import { renderElem } from "./vdom/Render";
-import diff from "./vdom/Patch";
+import diff from "./vdom/Diff";
 import hydrate from "./vdom/Hydrate";
 
 type funcProp = { [key: string]: Function };

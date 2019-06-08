@@ -1,6 +1,6 @@
 /*
-* Code adapted from: https://github.com/ycmjason-talks/2018-11-21-manc-web-meetup-4
-* */
+ * Code adapted from: https://github.com/ycmjason-talks/2018-11-21-manc-web-meetup-4
+ * */
 
 import Polarbear from "../Polarbear";
 import { vNode } from "../globals";
@@ -93,6 +93,15 @@ export default function diff(instance: Polarbear, vOldNode: (vNode | string), vN
   }
 
   if (vOldNode.tagName !== vNewNode.tagName) {
+    return ($node: HTMLElement) => {
+      const $newNode = render(instance, vNewNode);
+      $node.replaceWith($newNode);
+      return $newNode;
+    };
+  }
+
+  if (vNewNode.conditionalCase !== "") {
+    // TODO: compare to previous evaluation
     return ($node: HTMLElement) => {
       const $newNode = render(instance, vNewNode);
       $node.replaceWith($newNode);
