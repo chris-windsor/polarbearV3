@@ -3,7 +3,7 @@ import { vNode } from "../globals";
 import computeEvent from "../attributes/Events";
 import { getProp } from "../data/DataFns";
 import computeBinding from "../attributes/Bindval";
-import { createEl } from "./CreateElement";
+import createEl from "./CreateElement";
 
 export const renderElem = (instance: Polarbear, {tagName, attrs = {}, events = {}, conditionalCase, loopCase, boundData, refName, children = []}: vNode): any => {
   // Evaluate conditional statement for the element

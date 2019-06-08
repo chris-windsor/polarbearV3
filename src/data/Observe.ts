@@ -1,7 +1,7 @@
 import Polarbear from "../Polarbear";
 import { getProp, setProp } from "./DataFns";
 
-export const observe = (instance: Polarbear, obj: { [key: string]: any }, parent?: string): void => {
+export default function observe(instance: Polarbear, obj: { [key: string]: any }, parent?: string): void {
   for (const prop in obj) {
     if (obj.hasOwnProperty(prop)) {
       // Remap property path if it is a nested property

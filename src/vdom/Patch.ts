@@ -1,3 +1,7 @@
+/*
+* Code adapted from: https://github.com/ycmjason-talks/2018-11-21-manc-web-meetup-4
+* */
+
 import Polarbear from "../Polarbear";
 import { vNode } from "../globals";
 import { render } from "./Render";

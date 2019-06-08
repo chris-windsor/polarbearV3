@@ -1,5 +1,5 @@
-import { traverse } from "./dom/Traverse";
-import { observe } from "./data/Observe";
+import traverse from "./dom/Traverse";
+import observe from "./data/Observe";
 import { possibleEventList } from "./etc/ElementEvents";
 import { renderElem } from "./vdom/Render";
 import diff from "./vdom/Patch";
@@ -144,6 +144,5 @@ function mount($node: HTMLElement, $target: HTMLElement) {
   $target.replaceWith($node);
   return $node;
 }
-
 
 (window as any).Polarbear = Polarbear;

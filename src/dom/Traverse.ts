@@ -1,8 +1,8 @@
 import { Regexes } from "../etc/Regexes";
-import { createEl } from "../vdom/CreateElement";
+import createEl from "../vdom/CreateElement";
 import { strObj, vNode } from "../globals";
 
-export const traverse = (node: HTMLElement) => {
+export default function traverse(node: HTMLElement) {
   let attrs: strObj = {};
   let events: strObj = {};
   let conditionalCase: string = "";
