@@ -1,25 +1,52 @@
 import { vNode } from "../globals";
 import Polarbear from "../Polarbear";
 import { Regexes } from "../etc/Regexes";
+import createEl from "./CreateElement";
 
-export default function hydrate(instance: Polarbear, node: vNode) {
+export default function hydrate(instance: Polarbear, node: (vNode | string)) {
   const nodeCopy = JSON.parse(JSON.stringify(node));
   const data = instance.$data;
 
-  Array.from(nodeCopy.children)
-       .forEach((e: (vNode | string), i: number) => {
-         if ((e).toString() === "[object Object]") {
-           nodeCopy.children[i] = hydrate(instance, e as vNode);
-         } else {
-           const parsed = computeContent(instance, e as string);
+  let newRootChildren: (vNode | string)[] = [];
 
-           nodeCopy.children[i] = Function(`
+  nodeCopy.children.map((e: (vNode | string), i: number) => {
+    if (typeof e !== "string" && e.loopCase) {
+      const {tagName, attrs = {}, events = {}, conditionalCase, loopCase, boundData, refName, children = []} = e;
+
+      const preHydratedChildren = hydrate(instance, {
+        tagName, attrs, events, conditionalCase, loopCase: null, boundData, refName, children
+      });
+
+      const newChildren = Array.from(new Array(parseInt(loopCase as string)), (v, j) => {
+        return createEl(tagName, {
+          attrs,
+          events,
+          conditionalCase,
+          loopCase: null,
+          boundData,
+          refName: null,
+          children: [preHydratedChildren]
+        });
+      });
+
+      newRootChildren.push(...newChildren);
+    } else {
+      if ((e).toString() === "[object Object]") {
+        newRootChildren.push(hydrate(instance, e as vNode));
+      } else {
+        const parsed = computeContent(instance, e as string);
+
+        newRootChildren.push(Function(`
             "use strict";
             return \`${parsed}\`;
             `)
-             .call(data);
-         }
-       });
+          .call(data));
+      }
+    }
+  });
+
+  nodeCopy.children = newRootChildren;
+
   return nodeCopy;
 }
 
@@ -42,7 +69,8 @@ const computeContent = (instance: Polarbear, content: string) => {
       });
 
       // TODO: fix this nonsense
-      return innerContent.replace('{{', "${").replace("}}", "}")
+      return innerContent.replace("{{", "${")
+                         .replace("}}", "}");
     });
   }
 

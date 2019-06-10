@@ -51,6 +51,9 @@ export const renderElem = (instance: Polarbear, {tagName, attrs = {}, events = {
   }
 
   if (loopCase) {
+    // @ts-ignore
+    console.log("Shouldn't be coming here", arguments[1]);
+
     return Array.from(new Array(loopCase), (v, i) => {
       return createEl(tagName, {
         attrs,

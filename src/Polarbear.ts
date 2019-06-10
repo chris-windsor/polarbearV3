@@ -122,6 +122,8 @@ export default class Polarbear {
     if (this.$initial) {
       this.$currentVDom = hydrate(this, this.$masterVDom);
 
+      console.log(this.$currentVDom);
+
       this.$appEl = mount(renderElem(this, this.$currentVDom), this.$appContainerEl);
 
       this.$initial = false;
