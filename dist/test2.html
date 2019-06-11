@@ -7,8 +7,8 @@
 <body>
 <div id="app">
   <ul class="mylist">
-    <li loopfor="4">
-      ...
+    <li loopfor="(k, v, idx) in names">
+      {{k}}: {{v}} ({{idx}})
     </li>
   </ul>
 </div>
@@ -17,6 +17,7 @@
   const vm = new Polarbear({
     el: "#app",
     data: {
+      names: {"Chris": "123", "Bob": "456", "John": "789"},
       groceryList: ["Apple", "Mango", "Peach"]
     }
   });

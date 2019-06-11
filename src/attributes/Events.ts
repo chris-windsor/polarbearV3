@@ -10,6 +10,12 @@ export default function computeEvent(instance: Polarbear, event: string, callbac
   const eventName: string = eventComponents[0];
   const eventModifiers: string[] = eventComponents.splice(1);
 
+  // Check for valid event name before attempting to add it to an element
+  if (!possibleEventList.includes(eventName)) {
+    // ERROR: invalid event name
+    return;
+  }
+
   // Get list of common keys that we want to reference by name instead of keycodes
   const commonKeyCodeNames: string[] = Object.keys(keyCodes);
 
@@ -48,12 +54,6 @@ export default function computeEvent(instance: Polarbear, event: string, callbac
 
   // Create a conditional string to evaluate within the function call before evaluating actual code
   const conditionalRule: string = `if (!(${conditionalChecks.join("||")})) { return; }`;
-
-  // Check for valid event name before attempting to add it to an element
-  if (!possibleEventList.includes(eventName)) {
-    // ERROR: invalid event name
-    return;
-  }
 
   // Parse the received code into usable code for the event listener
   const finalCode: string = parse(instance, callbackFn);

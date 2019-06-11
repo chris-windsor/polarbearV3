@@ -2,22 +2,24 @@ import { vNode } from "../globals";
 import Polarbear from "../Polarbear";
 import { Regexes } from "../etc/Regexes";
 import createEl from "./CreateElement";
+import computeLoop from "../attributes/Loopfor";
+import { getProp } from "../data/DataFns";
 
-export default function hydrate(instance: Polarbear, node: (vNode | string)) {
+export default function hydrate(instance: Polarbear, node: (vNode | string), extraData?: { [key: string]: any }) {
   const nodeCopy = JSON.parse(JSON.stringify(node));
   const data = instance.$data;
 
   let newRootChildren: (vNode | string)[] = [];
 
-  nodeCopy.children.map((e: (vNode | string), i: number) => {
+  nodeCopy.children.map((e: (vNode | string)) => {
     if (typeof e !== "string" && e.loopCase) {
       const {tagName, attrs = {}, events = {}, conditionalCase, loopCase, boundData, refName, children = []} = e;
 
-      const preHydratedChildren = hydrate(instance, {
-        tagName, attrs, events, conditionalCase, loopCase: null, boundData, refName, children
-      });
+      const {keyName, valName, idxName, iterable, count, type} = computeLoop(instance, loopCase);
 
-      const newChildren = Array.from(new Array(parseInt(loopCase as string)), (v, j) => {
+      console.log(iterable);
+
+      const newChildren = Array.from(new Array(count), (v, j) => {
         return createEl(tagName, {
           attrs,
           events,
@@ -25,7 +27,13 @@ export default function hydrate(instance: Polarbear, node: (vNode | string)) {
           loopCase: null,
           boundData,
           refName: null,
-          children: [preHydratedChildren]
+          children: [hydrate(instance, {
+            tagName, attrs, events, conditionalCase, loopCase: null, boundData, refName, children
+          }, {
+            [keyName || '$KEYNAME']: type === "array" ? iterable[j]: iterable[j][0],
+            [valName || '$VALNAME']: type === "array" ? null: iterable[j][1],
+            [idxName || '$IDXNAME']: j
+          })]
         });
       });
 
@@ -38,9 +46,10 @@ export default function hydrate(instance: Polarbear, node: (vNode | string)) {
 
         newRootChildren.push(Function(`
             "use strict";
+            const $EXTRA_DATA = arguments[0];
             return \`${parsed}\`;
             `)
-          .call(data));
+          .call(data, extraData));
       }
     }
   });
@@ -64,8 +73,11 @@ const computeContent = (instance: Polarbear, content: string) => {
     content = content.replace(interpolationMatches[i], (cur: string) => {
       // Replace each property or function call within the interpolation with a reference to the instance
       const innerContent = cur.replace(Regexes.interpolationContent, (s: string) => {
-        // TODO: check for actual property vs built-ins using getter
-        return `this.${s}`;
+        if (getProp(instance.$data, s) !== undefined) {
+          return `this.${s}`;
+        } else {
+          return `$EXTRA_DATA.${s}`;
+        }
       });
 
       // TODO: fix this nonsense
