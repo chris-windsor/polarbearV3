@@ -1,5 +1,7 @@
 import Polarbear from "../Polarbear";
 import { getProp } from "../data/DataFns";
+import resolveType from "../etc/ResolveType";
+import normalizeString from "../etc/NormalizeString";
 
 export default function computeLoop(instance: Polarbear, statement: string) {
   const loopComponents: string[] = statement.split(/\sin\s/);
@@ -9,40 +11,38 @@ export default function computeLoop(instance: Polarbear, statement: string) {
                                        .split(",");
     let iterable = getProp(instance.$data, loopComponents[1].trim());
 
-    let keyName, valName, idxName, count, type;
+    let keyName, valName, idxName, count;
 
-    console.log(specifics);
+    const type = resolveType(iterable);
 
     if (specifics.length === 1) {
-      keyName = specifics[0].trim();
+      keyName = normalizeString(specifics[0]);
     } else if (specifics.length === 2) {
-      keyName = specifics[0].substr(1)
-                            .trim();
-      idxName = specifics[1].substr(0, specifics[1].length - 1)
-                            .trim();
+      keyName = normalizeString(specifics[0]);
+      idxName = normalizeString(specifics[1]);
     } else if (specifics.length === 3) {
-      keyName = specifics[0].substr(1)
-                            .trim();
-      valName = specifics[1].trim();
-      idxName = specifics[2].substr(0, specifics[2].length - 1)
-                            .trim();
+      keyName = normalizeString(specifics[0]);
+      valName = normalizeString(specifics[1]);
+      idxName = normalizeString(specifics[2]);
     } else {
       // ERROR: too many vars
     }
 
-
-    // TODO: use global type checking methods
-    // TODO: implement number iterable
-    if (Array.isArray(iterable)) {
-      type = "array";
-      count = iterable.length;
-    } else if ((iterable).toString() === "[object Object]") {
-      type = "object";
-      iterable = Object.entries(iterable);
-      count = Object.keys(iterable).length;
-    } else {
-      type = "number";
-      count = parseInt(iterable);
+    switch (type) {
+      case "array":
+        count = iterable.length;
+        break;
+      case "object":
+        iterable = Object.entries(iterable);
+        count = Object.keys(iterable).length;
+        break;
+      case "number":
+        // TODO: implement number iterable
+        count = parseInt(iterable);
+        break;
+      default:
+        // ERROR: unknown iterable type
+        break;
     }
 
     return {

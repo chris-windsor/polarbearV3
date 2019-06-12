@@ -4,6 +4,7 @@ import { Regexes } from "../etc/Regexes";
 import createEl from "./CreateElement";
 import computeLoop from "../attributes/Loopfor";
 import { getProp } from "../data/DataFns";
+import resolveType from "../etc/ResolveType";
 
 export default function hydrate(instance: Polarbear, node: (vNode | string), extraData?: { [key: string]: any }) {
   const nodeCopy = JSON.parse(JSON.stringify(node));
@@ -16,8 +17,6 @@ export default function hydrate(instance: Polarbear, node: (vNode | string), ext
       const {tagName, attrs = {}, events = {}, conditionalCase, loopCase, boundData, refName, children = []} = e;
 
       const {keyName, valName, idxName, iterable, count, type} = computeLoop(instance, loopCase);
-
-      console.log(iterable);
 
       const newChildren = Array.from(new Array(count), (v, j) => {
         return createEl(tagName, {
@@ -39,7 +38,7 @@ export default function hydrate(instance: Polarbear, node: (vNode | string), ext
 
       newRootChildren.push(...newChildren);
     } else {
-      if ((e).toString() === "[object Object]") {
+      if (resolveType(e) === "object") {
         newRootChildren.push(hydrate(instance, e as vNode));
       } else {
         const parsed = computeContent(instance, e as string);
@@ -80,7 +79,6 @@ const computeContent = (instance: Polarbear, content: string) => {
         }
       });
 
-      // TODO: fix this nonsense
       return innerContent.replace("{{", "${")
                          .replace("}}", "}");
     });
