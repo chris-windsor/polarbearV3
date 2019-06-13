@@ -65,10 +65,6 @@ export default function observe(instance: Polarbear, obj: { [key: string]: any }
               // Pass through the instance reference and the property's old value and new value
               instance.$watchers[propPath].apply(instance, [oldVal, v]);
             }
-            // Update conditionally rendered elements based on property changes
-            // TODO
-            // Call render functions for all components that use the updated property
-            // TODO
             instance.render();
           }
         });

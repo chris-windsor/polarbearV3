@@ -37,7 +37,6 @@ export default function computeLoop(instance: Polarbear, statement: string) {
         count = Object.keys(iterable).length;
         break;
       case "number":
-        // TODO: implement number iterable
         count = parseInt(iterable);
         break;
       default:

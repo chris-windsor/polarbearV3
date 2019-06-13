@@ -1,7 +1,6 @@
 import traverse from "./dom/Traverse";
 import observe from "./data/Observe";
 import { possibleEventList } from "./etc/ElementEvents";
-import { renderElem } from "./vdom/Render";
 import diff from "./vdom/Diff";
 import hydrate from "./vdom/Hydrate";
 
@@ -26,8 +25,8 @@ export default class Polarbear {
   $appContainerEl: HTMLElement;
 
   // Virtual dom
-  $masterVDom: any;
-  $currentVDom: any;
+  $masterVDom: any = {};
+  $currentVDom: any = {};
 
   // References to document elements that are used for edge cases
   $refs: { [key: string]: Element } = {};
@@ -44,11 +43,6 @@ export default class Polarbear {
   // Allows for other instance properties to be created
   [key: string]: any;
 
-  // TODO: remove
-  $initial: boolean = true;
-
-  $appEl: HTMLElement;
-
   constructor(params: PolarbearParams) {
     // Call created method if it exists
     // Instance has just been created. Nothing else has happened yet
@@ -59,10 +53,6 @@ export default class Polarbear {
 
     // Grab root app element
     this.$appContainerEl = document.querySelector(this.$appContainerSel);
-
-    // Traverse app DOM and copy into VDOM
-    this.$masterVDom = traverse(this.$appContainerEl);
-    this.$currentVDom = {};
 
     // Create observables for all of the data attributes
     observe(this, params.data);
@@ -77,12 +67,15 @@ export default class Polarbear {
       }
     }
 
+    // Traverse app DOM and copy into VDOM
+    this.$masterVDom = traverse(this, this.$appContainerEl);
+    this.$currentVDom = {};
+
     // Initialize all document level events if they exist
     if (params.events) {
       for (const event in params.events) {
         if (params.events.hasOwnProperty(event) && possibleEventList.includes(event)) {
           // Add document level event callbacks for chosen events
-          // TODO: probably change this to be on the app container rather than document
           document.addEventListener(event, (e: Event) => params.events[event](e));
         }
       }
@@ -97,7 +90,6 @@ export default class Polarbear {
         }
       }
     }
-
 
     // Perform initial render
     this.render();
@@ -119,30 +111,15 @@ export default class Polarbear {
 
   render() {
     const r1 = performance.now();
-    if (this.$initial) {
-      this.$currentVDom = hydrate(this, this.$masterVDom);
 
-      this.$appEl = mount(renderElem(this, this.$currentVDom), this.$appContainerEl);
-
-      this.$initial = false;
-    } else {
-      const temp = hydrate(this, this.$masterVDom);
-
-      const patch = diff(this, this.$currentVDom, temp);
-
-      this.$appEl = patch(this.$appEl);
-
-      this.$currentVDom = temp;
-    }
+    const temp = hydrate(this, this.$masterVDom);
+    const patch = diff(this, this.$currentVDom, temp);
+    this.$appContainerEl = patch(this.$appContainerEl);
+    this.$currentVDom = temp;
 
     const r2 = performance.now();
     console.log(`Render took ${(r2 - r1).toFixed(1)}ms`);
   }
-}
-
-function mount($node: HTMLElement, $target: HTMLElement) {
-  $target.replaceWith($node);
-  return $node;
 }
 
 (window as any).Polarbear = Polarbear;

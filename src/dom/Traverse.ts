@@ -1,8 +1,10 @@
 import { Regexes } from "../etc/Regexes";
 import createEl from "../vdom/CreateElement";
 import { strObj, vNode } from "../globals";
+import { getProp } from "../data/DataFns";
+import Polarbear from "../Polarbear";
 
-export default function traverse(node: HTMLElement) {
+export default function traverse(instance: Polarbear, node: HTMLElement) {
   let attrs: strObj = {};
   let events: strObj = {};
   let conditionalCase: string = "";
@@ -14,7 +16,7 @@ export default function traverse(node: HTMLElement) {
   Array.from(node.childNodes)
        .forEach((e: HTMLElement) => {
          if (e.nodeType === 1) {
-           children.push((traverse(e) as vNode));
+           children.push((traverse(instance, e) as vNode));
          } else {
            children.push((e as any).data);
          }
@@ -43,16 +45,14 @@ export default function traverse(node: HTMLElement) {
     } else if (name === "showif") {
       // Process conditional if attribute
       const computedCondition: string = value.replace(Regexes.interpolationContent, (s: string) => {
-        // TODO: check for actual property vs built-ins using getter
-        return `this.${s}`;
+        return getProp(instance.$data, s) !== undefined ? `this.${s}` : s;
       });
       conditionalCase = computedCondition;
     } else if (name === "showelse") {
       // Process conditional else attribute
       // @ts-ignore
       const computedCondition: string = node.previousElementSibling.attributes["showif"].value.replace(Regexes.interpolationContent, (s: string) => {
-        // TODO: check for actual property vs built-ins using getter
-        return `this.${s}`;
+        return getProp(instance.$data, s) !== undefined ? `this.${s}` : s;
       });
       conditionalCase = `!(${computedCondition})`;
     } else {
