@@ -3,10 +3,11 @@ const browserify = require("browserify");
 const source = require("vinyl-source-stream");
 const watchify = require("watchify");
 const tsify = require("tsify");
-const uglify = require('gulp-uglify');
-const sourcemaps = require('gulp-sourcemaps');
-const buffer = require('vinyl-buffer');
+const uglify = require("gulp-uglify");
+const sourcemaps = require("gulp-sourcemaps");
+const buffer = require("vinyl-buffer");
 const gutil = require("gulp-util");
+const babelify = require("babelify");
 
 const watchedBrowserify = watchify(browserify({
   basedir: ".",
@@ -15,7 +16,8 @@ const watchedBrowserify = watchify(browserify({
   cache: {},
   packageCache: {}
 })
-  .plugin(tsify));
+  .plugin(tsify)
+  .transform(babelify, {extensions: [".ts"]}));
 
 const bundle = () => {
   return watchedBrowserify
@@ -24,7 +26,7 @@ const bundle = () => {
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(uglify())
-    .pipe(sourcemaps.write('./'))
+    .pipe(sourcemaps.write("./"))
     .pipe(gulp.dest("dist"));
 };
 
