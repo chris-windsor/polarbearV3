@@ -18,22 +18,14 @@ const zip = (xs: (vNode | string)[], ys: ((vNode | string)[] | NodeListOf<ChildN
 const diffAttrs = (oldAttrs: {}, newAttrs: {}) => {
   const patches: any[] = [];
 
+  const attrs = Object.assign(oldAttrs, newAttrs);
+
   // set new attributes
-  for (const [k, v] of Object.entries(newAttrs)) {
+  for (const [k, v] of Object.entries(attrs)) {
     patches.push(($node: HTMLElement) => {
       $node.setAttribute(k, (v as any));
       return $node;
     });
-  }
-
-  // remove old attributes
-  for (const k in oldAttrs) {
-    if (!(k in newAttrs)) {
-      patches.push(($node: HTMLElement) => {
-        $node.removeAttribute(k);
-        return $node;
-      });
-    }
   }
 
   return ($node: HTMLElement) => {
@@ -117,9 +109,6 @@ export default function diff(instance: Polarbear, vOldNode: (vNode | string), vN
       children: render(instance, vNewNode)
     }));
     return ($node: HTMLElement) => {
-      for (let i = $node.parentNode.childNodes.length - 1; i > 1; i--) {
-        $node.parentNode.childNodes[i].remove();
-      }
       $node.replaceWith($newNode);
       return $newNode;
     };
