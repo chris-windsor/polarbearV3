@@ -9,7 +9,7 @@ export default function computeLoop(instance: Polarbear, statement: string) {
   if (loopComponents.length > 1) {
     const specifics = loopComponents[0].trim()
                                        .split(",");
-    let iterable = getProp(instance.$data, loopComponents[1].trim());
+    let iterable = getProp(instance.$data, loopComponents[1].trim()) || loopComponents[1].trim();
 
     let keyName, valName, idxName, count;
 

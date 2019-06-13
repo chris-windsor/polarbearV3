@@ -26,11 +26,12 @@ export default function hydrate(instance: Polarbear, node: (vNode | string), ext
           loopCase: null,
           boundData,
           refName: null,
+          // TODO: only re-hydrate the nodes if their data has changed or the loop iteration has changed
           children: [hydrate(instance, {
             tagName, attrs, events, conditionalCase, loopCase: null, boundData, refName, children
           }, {
-            [keyName || '$KEYNAME']: type === "array" ? iterable[j]: iterable[j][0],
-            [valName || '$VALNAME']: type === "array" ? null: iterable[j][1],
+            [keyName || '$KEYNAME']: type === "array" ? iterable[j]: type === "object" ? iterable[j][0] : j,
+            [valName || '$VALNAME']: type === "array" ? null: type === "object" ? iterable[j][1]: j,
             [idxName || '$IDXNAME']: j
           })]
         });
@@ -39,7 +40,7 @@ export default function hydrate(instance: Polarbear, node: (vNode | string), ext
       newRootChildren.push(...newChildren);
     } else {
       if (resolveType(e) === "object") {
-        newRootChildren.push(hydrate(instance, e as vNode));
+        newRootChildren.push(hydrate(instance, e as vNode, extraData));
       } else {
         const parsed = computeContent(instance, e as string);
 
@@ -48,7 +49,7 @@ export default function hydrate(instance: Polarbear, node: (vNode | string), ext
             const $EXTRA_DATA = arguments[0];
             return \`${parsed}\`;
             `)
-          .call(data, extraData));
+          .call(data, extraData || {}));
       }
     }
   });

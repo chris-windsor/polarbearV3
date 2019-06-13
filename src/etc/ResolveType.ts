@@ -2,7 +2,7 @@
  * Resolves a variable type
  * */
 export default function resolveType(o: any): string {
-  if (o.toString() === "[object Object]") {
+  if (o !== undefined && o.toString() === "[object Object]") {
     return "object";
   } else if (Array.isArray(o)) {
     return "array";
