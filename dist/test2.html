@@ -6,19 +6,22 @@
 </head>
 <body>
 <div id="app">
-  <ul class="mylist">
-    <li loopfor="(k, v, idx) in names">
-      {{k}}: {{v}} ({{idx}})
-    </li>
-  </ul>
+  <h4>{{name | reverse}}</h4>
+  <input type="text" bindval="name">
 </div>
 <script src="bundle.js"></script>
 <script>
   const vm = new Polarbear({
     el: "#app",
     data: {
-      names: {"Chris": "123", "Bob": "456", "John": "789"},
-      groceryList: ["Apple", "Mango", "Peach"]
+      name: "Chris"
+    },
+    filters: {
+      reverse(s) {
+        return s.split("")
+                .reverse()
+                .join("");
+      }
     }
   });
 </script>
