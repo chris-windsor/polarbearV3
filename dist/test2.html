@@ -6,21 +6,25 @@
 </head>
 <body>
 <div id="app">
-  <h4>{{name | reverse}}</h4>
-  <input type="text" bindval="name">
+  <div>
+    <ul>
+      <li loopfor="item in items">{{item}}</li>
+    </ul>
+  </div>
+  <input type="text" bindval="newItem">
+  <button @click="addItem">add</button>
 </div>
 <script src="bundle.js"></script>
 <script>
   const vm = new Polarbear({
     el: "#app",
     data: {
-      name: "Chris"
+      items: ["Apple", "Banana"],
+      newItem: ""
     },
-    filters: {
-      reverse(s) {
-        return s.split("")
-                .reverse()
-                .join("");
+    methods: {
+      addItem(){
+        this.items.push(this.newItem);
       }
     }
   });

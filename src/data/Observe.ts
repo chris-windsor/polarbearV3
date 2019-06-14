@@ -24,18 +24,19 @@ export default function observe(instance: Polarbear, obj: { [key: string]: any }
         // Store reference array in instance data property
         setProp(instance.$data, propPath, propertyVal);
 
-        // TODO: update list components if arrays are updated
-
+        // TODO: implement watcher update for arrays
         const arrProxy = new Proxy(getProp(instance.$data, propPath), {
           // Proxy trap for value deletion
           deleteProperty(target: any, property: any): boolean {
             console.log(`deleting ${String(property)} from ${target}`);
+            instance.render();
             return true;
           },
           // Proxy trap for updating or adding values
           set(target: any, property: any, value: any): boolean {
             target[property] = value;
             console.log(`${target} ${value} ${String(property)}`);
+            instance.render();
             return true;
           }
         });
