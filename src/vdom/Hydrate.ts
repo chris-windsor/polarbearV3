@@ -102,6 +102,8 @@ const computeContent = (instance: Polarbear, content: string): any => {
       const innerContent = cur.replace(Regexes.interpolationContent, (s: string) => {
         if (getProp(instance.$data, s) !== undefined) {
           return `this.${s}`;
+        } else if (getProp(window, s) !== undefined) {
+          return s;
         } else {
           return `$EXTRA_DATA.${s}`;
         }

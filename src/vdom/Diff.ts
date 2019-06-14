@@ -94,16 +94,16 @@ export default function diff(instance: Polarbear, vOldNode: (vNode | string), vN
   }
 
   if (vNewNode.conditionalCase !== "") {
-    // TODO: compare to previous evaluation
     return ($node: HTMLElement) => {
       const $newNode = render(instance, vNewNode);
-      $node.replaceWith($newNode);
-      return $newNode;
+      if ($node.nodeType !== $newNode.nodeType) {
+        $node.replaceWith($newNode);
+        return $newNode;
+      }
     };
   }
 
   if (vNewNode.loopCase !== vOldNode.loopCase) {
-    // TODO: this should probably be cleaned up
     const $newNode = renderElem(instance, createEl(vNewNode.tagName, {
       loopCase: undefined,
       children: render(instance, vNewNode)
