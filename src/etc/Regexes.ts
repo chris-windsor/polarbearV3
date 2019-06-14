@@ -43,7 +43,7 @@ export namespace Regexes {
    * Match:
    * sayHello()
    */
-  export const innerFunctionInterpolation: RegExp = /\w+\(\)/;
+  export const innerFunctionInterpolation: RegExp = /\w+\([A-z$_]+\)/;
 
   /*
    * Matches function calls inside interpolation matches
