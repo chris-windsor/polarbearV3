@@ -4,13 +4,13 @@
 type strObj = { [key: string]: string }
 
 type vNodeOpts = {
-  attrs: strObj
-  events: strObj
-  conditionalCase: string
-  loopCase: string
-  boundData: { [key: string]: any }
-  refName: string
-  children: (vNode | string)[]
+  attrs?: strObj
+  events?: strObj
+  conditionalCase?: string
+  loopCase?: string
+  boundData?: { [key: string]: any }
+  refName?: string
+  children?: (vNode | string)[]
 }
 
 export interface vNode extends vNodeOpts {

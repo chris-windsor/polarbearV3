@@ -4,7 +4,15 @@ import computeEvent from "../attributes/Events";
 import { getProp } from "../data/DataFns";
 import computeBinding from "../attributes/Bindval";
 
-export const renderElem = (instance: Polarbear, {tagName, attrs = {}, events = {}, conditionalCase, boundData, refName, children = []}: vNode): any => {
+export const renderElem = (instance: Polarbear, {
+  tagName,
+  attrs = {},
+  events = {},
+  conditionalCase,
+  boundData,
+  refName,
+  children = []
+}: vNode): any => {
   // Evaluate conditional statement for the element
   const conditionalEval: boolean = Boolean(Function(`"use strict";return ${conditionalCase};`)
     .call(instance));

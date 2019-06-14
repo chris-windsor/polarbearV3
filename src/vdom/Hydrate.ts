@@ -5,7 +5,7 @@ import createEl from "./CreateElement";
 import computeLoop from "../attributes/Loopfor";
 import { getProp } from "../data/DataFns";
 import resolveType from "../etc/ResolveType";
-import filter2Match = Regexes.filter2Match;
+import filtersMatch = Regexes.filtersMatch;
 import normalizeString from "../etc/NormalizeString";
 
 export default function hydrate(instance: Polarbear, node: (vNode | string), extraData?: { [key: string]: any }) {
@@ -88,8 +88,8 @@ const computeContent = (instance: Polarbear, content: string): any => {
     // Replace every interpolation call with its computed evaluation
     content = content.replace(interpolationMatches[i], (cur: string) => {
       // Strip out the filters if they exist
-      const filterStr = cur.match(filter2Match);
-      cur = filterStr ? cur.replace(filter2Match, "") : cur;
+      const filterStr = cur.match(filtersMatch);
+      cur = filterStr ? cur.replace(filtersMatch, "") : cur;
 
       if (filterStr) {
         filters = filterStr[0].trim()

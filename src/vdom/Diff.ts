@@ -105,7 +105,7 @@ export default function diff(instance: Polarbear, vOldNode: (vNode | string), vN
   if (vNewNode.loopCase !== vOldNode.loopCase) {
     // TODO: this should probably be cleaned up
     const $newNode = renderElem(instance, createEl(vNewNode.tagName, {
-      attrs: undefined, boundData: {}, conditionalCase: "", events: undefined, loopCase: undefined, refName: "",
+      loopCase: undefined,
       children: render(instance, vNewNode)
     }));
     return ($node: HTMLElement) => {

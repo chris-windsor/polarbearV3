@@ -67,10 +67,5 @@ export namespace Regexes {
    * Matches:
    * | upper | reverse
    */
-  export const filterMatch: RegExp = /(\|)(\s+)?\w+(.*)?\b(?=([^'\\]*(\\.|'([^'\\]*\\.)*[^'\\]*'))*[^']*$)/;
-  export const filter2Match: RegExp = /(\|)(\s+)?\w+(\.\w+)?(.*)?\b(?=([^'\\]*(\\.|'([^'\\]*\\.)*[^'\\]*'))*[^']*$)/;
-  export const filterNames: RegExp = /\w+(\.\w+)?/g;
-
-  // export const funcParseReg: RegExp = /([$\w.]+?(?=\())(?=([^'\\]*(\\.|'([^'\\]*\\.)*[^'\\]*'))*[^']*$)/g;
-  // export const propParseReg: RegExp = /\w+(?=([^'\\]*(\\.|'([^'\\]*\\.)*[^'\\]*'))*[^']*$)/g;
+  export const filtersMatch: RegExp = /(\|)(\s+)?\w+(\.\w+)?(.*)?\b(?=([^'\\]*(\\.|'([^'\\]*\\.)*[^'\\]*'))*[^']*$)/;
 }
