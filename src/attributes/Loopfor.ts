@@ -9,7 +9,8 @@ export default function computeLoop(instance: Polarbear, statement: string) {
   if (loopComponents.length > 1) {
     const specifics = loopComponents[0].trim()
                                        .split(",");
-    let iterable = getProp(instance.$data, loopComponents[1].trim()) || loopComponents[1].trim();
+    const iterableName: string = loopComponents[1].trim();
+    let iterable = getProp(instance.$data, iterableName) || iterableName;
 
     let keyName, valName, idxName, count;
 
@@ -25,7 +26,7 @@ export default function computeLoop(instance: Polarbear, statement: string) {
       valName = normalizeString(specifics[1]);
       idxName = normalizeString(specifics[2]);
     } else {
-      // ERROR: too many vars
+      console.error(`Unable to parse loop statement: '${statement}'.`);
     }
 
     switch (type) {
@@ -40,7 +41,7 @@ export default function computeLoop(instance: Polarbear, statement: string) {
         count = parseInt(iterable);
         break;
       default:
-        // ERROR: unknown iterable type
+        console.error(`Unknown iterable type for '${iterableName}'.`);
         break;
     }
 
@@ -53,6 +54,6 @@ export default function computeLoop(instance: Polarbear, statement: string) {
       type
     };
   } else {
-    // ERROR: invalid loop specification
+    console.error(`Unable to parse loop statement: '${statement}'.`);
   }
 }

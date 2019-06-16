@@ -28,7 +28,6 @@ export default function hydrate(instance: Polarbear, node: (vNode | string), ext
           loopCase: null,
           boundData,
           refName: null,
-          // TODO: only re-hydrate the nodes if their data has changed or the loop iteration has changed
           children: [hydrate(instance, {
             tagName, attrs, events, conditionalCase, loopCase: null, boundData, refName, children
           }, {

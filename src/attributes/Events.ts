@@ -12,7 +12,7 @@ export default function computeEvent(instance: Polarbear, event: string, callbac
 
   // Check for valid event name before attempting to add it to an element
   if (!possibleEventList.includes(eventName)) {
-    // ERROR: invalid event name
+    console.error(`Unknown event name: '${eventName}'.`);
     return;
   }
 

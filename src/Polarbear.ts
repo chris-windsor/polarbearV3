@@ -53,6 +53,7 @@ export default class Polarbear {
 
     // Grab root app element
     this.$appContainerEl = document.querySelector(this.$appContainerSel);
+    if (!this.$appContainerEl) console.error(`No app container found.`);
 
     // Create observables for all of the data attributes
     observe(this, params.data);
@@ -77,6 +78,8 @@ export default class Polarbear {
         if (params.events.hasOwnProperty(event) && possibleEventList.includes(event)) {
           // Add document level event callbacks for chosen events
           document.addEventListener(event, (e: Event) => params.events[event](e));
+        } else {
+          console.error(`Unknown event name: '${event}'.`);
         }
       }
     }
@@ -110,15 +113,10 @@ export default class Polarbear {
   }
 
   render() {
-    const r1 = performance.now();
-
     const temp = hydrate(this, this.$masterVDom);
     const patch = diff(this, this.$currentVDom, temp);
     this.$appContainerEl = patch(this.$appContainerEl);
     this.$currentVDom = temp;
-
-    const r2 = performance.now();
-    console.log(`Render took ${(r2 - r1).toFixed(1)}ms`);
   }
 }
 

@@ -4,7 +4,8 @@
   "description": "Minimalistic front-end framework for all",
   "main": "dist/bundle.js",
   "scripts": {
-    "dev": "gulp"
+    "dev": "gulp",
+    "build": "gulp build"
   },
   "author": "Chris Windsor",
   "license": "MIT",
