@@ -24,18 +24,19 @@ export default function observe(instance: Polarbear, obj: { [key: string]: any }
         // Store reference array in instance data property
         setProp(instance.$data, propPath, propertyVal);
 
-        // TODO: implement watcher update for arrays
         const arrProxy = new Proxy(getProp(instance.$data, propPath), {
-          // Proxy trap for value deletion
-          deleteProperty(target: any, property: any): boolean {
-            console.log(`deleting ${String(property)} from ${target}`);
-            instance.render();
-            return true;
+          get(target: any, property: any) {
+            // Now that the value has been updated we want to call the watcher if it exists
+            if (instance.$watchers[propPath]) {
+              // Pass through the instance reference and the property's old value
+              instance.$watchers[propPath].apply(instance, [target]);
+            }
+            return target[property];
           },
+
           // Proxy trap for updating or adding values
           set(target: any, property: any, value: any): boolean {
             target[property] = value;
-            console.log(`${target} ${value} ${String(property)}`);
             instance.render();
             return true;
           }

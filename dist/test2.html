@@ -30,6 +30,11 @@
       go(e) {
         console.log(e);
       }
+    },
+    watch: {
+      items(o) {
+        console.log(`Items changed from ${o}`);
+      }
     }
   });
 </script>
