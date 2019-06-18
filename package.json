@@ -1,6 +1,6 @@
 {
   "name": "polarbear",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Minimalistic front-end framework for all",
   "main": "dist/bundle.min.js",
   "scripts": {
