@@ -2,6 +2,8 @@
 
 This was built for the purpose of people who are familiar with Vue but want a lighter weight option that includes most of the crucial and heavily used Vue options.
 
+JSFiddle sandbox: https://jsfiddle.net/jyrcwpLm/
+
 ### Interpolation & filters
 
 ```html
